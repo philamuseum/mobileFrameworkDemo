@@ -1,0 +1,205 @@
+{
+  "objects": [
+    {
+      "object": {
+        "id": "96",
+        "path": "/rodin/content/adam",
+        "title": "Adam",
+        "onDisplay": "1",
+        "location": "67",
+        "tours": "",
+        "artist": "Auguste Rodin (French, 1840–1917)",
+        "date": "Modeled in clay 1880–81; cast in bronze 1925",
+        "dimensions": "6 feet 3 1/2 inches, 29 1/2 × 29 1/2 inches (191.8 × 74.9 × 74.9 cm)",
+        "creditLine": "Bequest of Jules E. Mastbaum",
+        "thumbnail": {
+          "src": "http://192.168.8.28/rodin/sites/default/files/styles/square_thumbnail/public/f1929-7-125v1-pma.jpg?itok=QrEl4hBV",
+          "alt": ""
+        },
+        "images_header": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-125v1-pma_0.jpg?itok=T7yNdunq",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-124insitu2012_0.jpg?itok=0tZUERjP",
+            "alt": ""
+          }
+        ],
+        "images_thumbnail": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-125v1-pma_0.jpg?itok=Zbzm-1RN",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-124insitu2012_0.jpg?itok=Z7P5vwqC",
+            "alt": ""
+          }
+        ],
+        "full": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-125v1-pma_0.jpg?itok=-DXsHG3U",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-124insitu2012_0.jpg?itok=v8EbYLKm",
+            "alt": ""
+          }
+        ],
+        "audio": null,
+        "video": null,
+        "text": null,
+        "content_updated": "01/29/2017 - 13:04",
+        "accession_number": "F1929-7-125",
+        "alt_titles": null,
+        "title_french": null
+      }
+    },
+    {
+      "object": {
+        "id": "95",
+        "path": "/rodin/content/albert-ernest-carrier-belleuse",
+        "title": "Albert-Ernest Carrier-Belleuse",
+        "onDisplay": "0",
+        "location": null,
+        "tours": "",
+        "artist": "Auguste Rodin (French, 1840–1917)",
+        "date": "Modeled in clay 1882; executed in Biscuit de Sèvres porcelain 1907",
+        "dimensions": "14 1/2 x 9 1/2 x 5 1/2 inches (36.8 x 24.1 x 14 cm)",
+        "creditLine": "Bequest of Jules E. Mastbaum",
+        "thumbnail": {
+          "src": "http://192.168.8.28/rodin/sites/default/files/styles/square_thumbnail/public/f1929-7-83v1-pma.jpg?itok=M5g-_Y4E",
+          "alt": ""
+        },
+        "images_header": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-83v1-pma_0.jpg?itok=zeSD3Ewi",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-83v3-pma.jpg?itok=UUGVTs7m",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-83v4-pma.jpg?itok=cDSkyw1-",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-83v5-pma.jpg?itok=wUw0QeBU",
+            "alt": ""
+          }
+        ],
+        "images_thumbnail": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-83v1-pma_0.jpg?itok=Vl7oexS6",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-83v3-pma.jpg?itok=KS1-YapK",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-83v4-pma.jpg?itok=UszDWSIL",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-83v5-pma.jpg?itok=B9d_G0CT",
+            "alt": ""
+          }
+        ],
+        "full": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-83v1-pma_0.jpg?itok=IFR7vHqb",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-83v3-pma.jpg?itok=n6A8GvDV",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-83v4-pma.jpg?itok=UmwdBBmV",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-83v5-pma.jpg?itok=-XjjLvHU",
+            "alt": ""
+          }
+        ],
+        "audio": null,
+        "video": null,
+        "text": "<p>Early in his career, Rodin worked for Albert-Ernest Carrier-Belleuse, a fashionable sculptor known for carving lace and crumpled fabrics out of marble. After eighteen years of on-and-off work modeling folds of cloth for his employer, Rodin declared his own preference for sculpting nudes. His homage to Carrier-Belleuse, nevertheless, is clothed in period garments.</p>\n",
+        "content_updated": "01/26/2017 - 10:47",
+        "accession_number": "F1929-7-83",
+        "alt_titles": null,
+        "title_french": null
+      }
+    },
+    {
+      "object": {
+        "id": "119",
+        "path": "/rodin/content/youth-triumphant",
+        "title": "Youth Triumphant",
+        "onDisplay": "1",
+        "location": "12",
+        "tours": "",
+        "artist": "Auguste Rodin (French, 1840–1917)",
+        "date": "Modeled in clay 1896; cast in bronze before 1918",
+        "dimensions": "20 1/2 x 16 1/2 x 12 inches (52.1 x 41.9 x 30.5 cm)",
+        "creditLine": "Bequest of Jules E. Mastbaum",
+        "thumbnail": {
+          "src": "http://192.168.8.28/rodin/sites/default/files/styles/square_thumbnail/public/f1929-7-23v1-pma_0.jpg?itok=csrhjbiS",
+          "alt": ""
+        },
+        "images_header": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-23v1-pma.jpg?itok=QfJXeGN0",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-23v2-pma.jpg?itok=AjpDpHXW",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/header_image/public/f1929-7-23v3-pma.jpg?itok=EQsKg0s3",
+            "alt": ""
+          }
+        ],
+        "images_thumbnail": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-23v1-pma.jpg?itok=tEDEfCVm",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-23v2-pma.jpg?itok=9lDIXHzr",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/template_thumbnail/public/f1929-7-23v3-pma.jpg?itok=NaC5DSvF",
+            "alt": ""
+          }
+        ],
+        "full": [
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-23v1-pma.jpg?itok=VdxNVEXS",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-23v2-pma.jpg?itok=quFVRE5h",
+            "alt": ""
+          },
+          {
+            "src": "http://192.168.8.28/rodin/sites/default/files/styles/pinch_and_zoom/public/f1929-7-23v3-pma.jpg?itok=oAT3SRz1",
+            "alt": ""
+          }
+        ],
+        "audio": null,
+        "video": null,
+        "text": "<p>One of Rodin’s more mysterious couplings, this piece represents an aged woman holding in her lap a reclining girl whose exuberant embrace threatens to topple the group. The disparity of ages and actions—the old woman holds her arms back as the young one clings to her neck—creates an unsettling tension and energy.</p>\n",
+        "content_updated": "01/29/2017 - 13:11",
+        "accession_number": "F1929-7-23",
+        "alt_titles": "<p>Old Age and Adolescence; Old Age and Youth; Grandmother’s Kiss; Eternal Youth; Fate and the Convalescent; Young Girl and Fate</p>\n###<p>Rodin’s titles were often influenced by Symbolism, a movement that believed in romantic, idealized, spiritual depictions and shied away from matter-of-fact meanings. Over time this work has had many titles, including<em>Young Girl and Fate</em>. In Greek mythology, Atropos was the eldest of the three Fates, goddesses responsible for cutting the string of time that measures life. Here, youth overcomes her, causing her to drop her scissors, which you can see on the back of this sculpture.</p>\n",
+        "title_french": "La jeunesse triomphante"
+      }
+    }
+  ]
+}

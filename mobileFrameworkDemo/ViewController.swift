@@ -60,6 +60,71 @@ class ViewController: UIViewController, GalleryLocationManagerDelegate {
         } catch {
             print("Error staring location ranging")
         }
+        
+        // let's download some data
+        
+        let sampleData = "rodinSampleData"
+        
+        let bundle = Bundle(for: type(of: self))
+        guard let fileURL = bundle.url(forResource: sampleData, withExtension: "json")
+            else {
+                print("Error loading file \(sampleData)")
+                return
+        }
+        
+        do {
+            let localData = try Data(contentsOf: fileURL)
+            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
+            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
+            
+            print("Files to download: \(filesToDownload.count)")
+            
+            let queue = QueueController.sharedInstance
+            
+            queue.reset()
+            
+            for file in filesToDownload {
+                queue.addItem(url: file)
+            }
+            
+            queue.startDownloading()
+            
+        } catch {
+            print("Error parsing \(sampleData)")
+        }
+        
+    }
+    
+    func getFilesToDownloadFromDataFile(jsonObject: [String: AnyObject]) -> [URL] {
+        
+        var urls = [URL]()
+        
+        let objects = jsonObject["objects"] as! [[String: Any]]
+        
+        for objectArray in objects {
+            let object = objectArray["object"] as! [String: Any]
+            
+            let thumbnailArray = object["thumbnail"] as! [String : Any]
+            let thumbnail = thumbnailArray["src"] as! String
+            
+            urls.append(URL(string: thumbnail)!)
+            
+//            let headerArray = object["images_header"] as! [[String : Any]]
+//            for headerItem in headerArray {
+//                let header = headerItem["src"] as! String
+//                urls.append(URL(string: header)!)
+//            }
+//            
+//            
+//            let fullImageArray = object["full"] as! [[String : Any]]
+//            for fullImageItem in fullImageArray {
+//                let fullImage = fullImageItem["src"] as! String
+//                urls.append(URL(string: fullImage)!)
+//            }
+            
+        }
+
+        return urls
     }
 
     override func didReceiveMemoryWarning() {
@@ -74,5 +139,12 @@ class ViewController: UIViewController, GalleryLocationManagerDelegate {
     }
 
 
+}
+
+extension ViewController : QueueControllerDelegate {
+    
+    func QueueControllerDidFinishDownloading(queueController: QueueController) {
+        print("FINISHED DOWNLOADING")
+    }
 }
 
