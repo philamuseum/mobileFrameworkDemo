@@ -45,11 +45,11 @@ class ViewController: UIViewController {
             
             urls.append(URL(string: thumbnail)!)
             
-            let headerArray = object["images_header"] as! [[String : Any]]
-            for headerItem in headerArray {
-                let header = headerItem["src"] as! String
-                urls.append(URL(string: header)!)
-            }
+//            let headerArray = object["images_header"] as! [[String : Any]]
+//            for headerItem in headerArray {
+//                let header = headerItem["src"] as! String
+//                urls.append(URL(string: header)!)
+//            }
             
 //            let fullImageArray = object["full"] as! [[String : Any]]
 //            for fullImageItem in fullImageArray {
@@ -147,6 +147,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func publishData(_ sender: Any) {
+        CacheService.sharedInstance.publishStagingEnvironment(completion: { success in
+            print("Publishing content successful: \(success)")
+        })
     }
     
     
@@ -155,6 +158,11 @@ class ViewController: UIViewController {
         let request = URLRequest(url: url!)
         self.webView.loadRequest(request)
     }
+    
+    @IBAction func deleteCachedLiveData(_ sender: Any) {
+        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.live, completion: { _ in })
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

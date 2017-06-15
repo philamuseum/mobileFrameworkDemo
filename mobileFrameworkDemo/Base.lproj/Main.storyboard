@@ -99,6 +99,13 @@
                                             <action selector="loadCachedPage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wpu-TE-5Lb"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bYN-eh-AKe">
+                                        <rect key="frame" x="16" y="30" width="84" height="30"/>
+                                        <state key="normal" title="Clear Cache"/>
+                                        <connections>
+                                            <action selector="deleteCachedLiveData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Mra-nm-xhn"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -106,6 +113,8 @@
                                     <constraint firstItem="Gvr-9d-eOU" firstAttribute="leading" secondItem="auK-S5-Cm3" secondAttribute="leading" id="92x-cE-PvE"/>
                                     <constraint firstAttribute="bottom" secondItem="Gvr-9d-eOU" secondAttribute="bottom" id="AcI-w0-BWW"/>
                                     <constraint firstItem="xf8-Iz-uvR" firstAttribute="centerX" secondItem="auK-S5-Cm3" secondAttribute="centerX" id="T61-mO-ej3"/>
+                                    <constraint firstItem="bYN-eh-AKe" firstAttribute="top" secondItem="xf8-Iz-uvR" secondAttribute="top" id="cJj-y6-xAe"/>
+                                    <constraint firstItem="bYN-eh-AKe" firstAttribute="leading" secondItem="auK-S5-Cm3" secondAttribute="leading" constant="16" id="rs3-5f-SmH"/>
                                     <constraint firstAttribute="trailing" secondItem="Gvr-9d-eOU" secondAttribute="trailing" id="sG1-Wn-OPL"/>
                                     <constraint firstItem="Gvr-9d-eOU" firstAttribute="top" secondItem="xf8-Iz-uvR" secondAttribute="bottom" constant="20" id="sop-1U-Ul4"/>
                                 </constraints>
