@@ -12,10 +12,55 @@ import CoreLocation
 
 class ViewController: UIViewController {
     
-    var locationManager = GalleryLocationManager(locationManager: CLLocationManager())
+    @IBOutlet weak var currentLocationLabel: UILabel!
+    @IBOutlet weak var downloadProgressView: UIProgressView!
+    @IBOutlet weak var publishDataButton: UIButton!
+    
+    @IBOutlet weak var webView: UIWebView!
+    
+    private let locationManager = GalleryLocationManager(locationManager: CLLocationManager())
+    private let downloadQueue = QueueController.sharedInstance
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // this is a demo and we want to start fresh every time, probably not a good idea in production
+        self.downloadQueue.reset()
+        
+        URLProtocol.registerClass(mobileFrameworkURLProtocol.self)
+
+    }
+    
+    func getFilesToDownloadFromDataFile(jsonObject: [String: AnyObject]) -> [URL] {
+        
+        var urls = [URL]()
+        
+        let objects = jsonObject["objects"] as! [[String: Any]]
+        
+        for objectArray in objects {
+            let object = objectArray["object"] as! [String: Any]
+            
+            let thumbnailArray = object["thumbnail"] as! [String : Any]
+            let thumbnail = thumbnailArray["src"] as! String
+            
+            urls.append(URL(string: thumbnail)!)
+            
+            let headerArray = object["images_header"] as! [[String : Any]]
+            for headerItem in headerArray {
+                let header = headerItem["src"] as! String
+                urls.append(URL(string: header)!)
+            }
+            
+//            let fullImageArray = object["full"] as! [[String : Any]]
+//            for fullImageItem in fullImageArray {
+//                let fullImage = fullImageItem["src"] as! String
+//                urls.append(URL(string: fullImage)!)
+//            }
+        }
+        return urls
+    }
+    
+    @IBAction func startLocationSensing(_ sender: Any) {
         
         // setting ourselfs up as delegate for location updates
         locationManager.delegate = self
@@ -27,42 +72,6 @@ class ViewController: UIViewController {
         // define the UUID you want to monitor along with a unique identifier
         let sampleRegion = CLBeaconRegion(proximityUUID: Constants.beacons.defaultUUID!, identifier: "mobileFrameworkDemo")
         locationManager.beaconRegion = sampleRegion
-        
-        // let's download some data (just an example, you would probably want to download asset data here)
-        
-        
-        // let's make this controller our delegate so we can track progress
-        QueueController.sharedInstance.delegate = self
-        
-        let sampleData = "rodinSampleData"
-        
-        let bundle = Bundle(for: type(of: self))
-        guard let sampleDataPathURL = bundle.url(forResource: sampleData, withExtension: "json")
-            else {
-                print("Error loading file \(sampleData)")
-                return
-        }
-        
-        do {
-            let localData = try Data(contentsOf: sampleDataPathURL)
-            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
-            
-            // we process the JSON file and get an array of files to download back
-            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
-            print("Files to download: \(filesToDownload.count)")
-            
-            let queue = QueueController.sharedInstance
-            // this is a demo and we want to start fresh every time, probably not a good idea in production
-            queue.reset()
-            
-            for file in filesToDownload {
-                queue.addItem(url: file)
-            }
-            queue.startDownloading()
-            
-        } catch {
-            print("Error parsing \(sampleData)")
-        }
         
         // loading our location assets that are stored locally
         do {
@@ -98,40 +107,53 @@ class ViewController: UIViewController {
             print("Error staring location ranging")
         }
         
-        
-        
     }
     
-    func getFilesToDownloadFromDataFile(jsonObject: [String: AnyObject]) -> [URL] {
+    @IBAction func startDownloadingContent(_ sender: Any) {
         
-        var urls = [URL]()
+        // let's download some data (just an example, you would probably want to download asset data here)
         
-        let objects = jsonObject["objects"] as! [[String: Any]]
+        self.publishDataButton?.isEnabled = false
         
-        for objectArray in objects {
-            let object = objectArray["object"] as! [String: Any]
+        // let's make this controller our delegate so we can track progress
+        self.downloadQueue.delegate = self
+        
+        let sampleData = "rodinSampleData"
+        
+        let bundle = Bundle(for: type(of: self))
+        guard let sampleDataPathURL = bundle.url(forResource: sampleData, withExtension: "json")
+            else {
+                print("Error loading file \(sampleData)")
+                return
+        }
+        
+        do {
+            let localData = try Data(contentsOf: sampleDataPathURL)
+            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
             
-            let thumbnailArray = object["thumbnail"] as! [String : Any]
-            let thumbnail = thumbnailArray["src"] as! String
+            // we process the JSON file and get an array of files to download back
+            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
+            print("Files to download: \(filesToDownload.count)")
             
-            urls.append(URL(string: thumbnail)!)
+            for file in filesToDownload {
+                self.downloadQueue.addItem(url: file)
+            }
+            self.downloadQueue.startDownloading()
             
-//            let headerArray = object["images_header"] as! [[String : Any]]
-//            for headerItem in headerArray {
-//                let header = headerItem["src"] as! String
-//                urls.append(URL(string: header)!)
-//            }
-//            
-//            
-//            let fullImageArray = object["full"] as! [[String : Any]]
-//            for fullImageItem in fullImageArray {
-//                let fullImage = fullImageItem["src"] as! String
-//                urls.append(URL(string: fullImage)!)
-//            }
-            
+        } catch {
+            print("Error parsing \(sampleData)")
         }
 
-        return urls
+    }
+    
+    @IBAction func publishData(_ sender: Any) {
+    }
+    
+    
+    @IBAction func loadCachedPage(_ sender: Any) {
+        let url = URL(string: "http://192.168.8.28/rodin/sites/default/files/styles/square_thumbnail/public/f1929-7-125v1-pma.jpg?itok=QrEl4hBV")
+        let request = URLRequest(url: url!)
+        self.webView.loadRequest(request)
     }
 
     override func didReceiveMemoryWarning() {
@@ -141,20 +163,30 @@ class ViewController: UIViewController {
 }
 
 extension ViewController : GalleryLocationManagerDelegate {
-    func locationManager(locationManager: GalleryLocationManager, didEnterLocation location: Location) {
+    func locationManager(locationManager: GalleryLocationManager, didEnterKnownLocation location: Location) {
         // do your magic here
         print("Entered location: \(location.name)")
+        DispatchQueue.main.async {
+            self.currentLocationLabel.text = location.name
+        }
     }
 }
 
 extension ViewController : QueueControllerDelegate {
     func QueueControllerDownloadInProgress(queueController: QueueController, withProgress progress: Float) {
         print("Download queue progress update: \(progress) %")
+        DispatchQueue.main.async {
+            self.downloadProgressView?.setProgress(progress, animated: false)
+        }
+        
     }
 
     
     func QueueControllerDidFinishDownloading(queueController: QueueController) {
         print("Download queue finished downloading.")
+        DispatchQueue.main.async {
+            self.publishDataButton?.isEnabled = true
+        }
     }
 }
 
