@@ -10,24 +10,61 @@ import UIKit
 import mobileFramework
 import CoreLocation
 
-class ViewController: UIViewController, GalleryLocationManagerDelegate {
+class ViewController: UIViewController {
     
     var locationManager = GalleryLocationManager(locationManager: CLLocationManager())
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // setting ourselfs up as delegate
+        // setting ourselfs up as delegate for location updates
         locationManager.delegate = self
         
         // we need to ask the user for when in use permissions
+        // (this should be done when you actually need it in your application and probably not in viewDidLoad)
         locationManager.requestPermissions()
         
         // define the UUID you want to monitor along with a unique identifier
         let sampleRegion = CLBeaconRegion(proximityUUID: Constants.beacons.defaultUUID!, identifier: "mobileFrameworkDemo")
         locationManager.beaconRegion = sampleRegion
         
-        // loading our locations
+        // let's download some data (just an example, you would probably want to download asset data here)
+        
+        
+        // let's make this controller our delegate so we can track progress
+        QueueController.sharedInstance.delegate = self
+        
+        let sampleData = "rodinSampleData"
+        
+        let bundle = Bundle(for: type(of: self))
+        guard let sampleDataPathURL = bundle.url(forResource: sampleData, withExtension: "json")
+            else {
+                print("Error loading file \(sampleData)")
+                return
+        }
+        
+        do {
+            let localData = try Data(contentsOf: sampleDataPathURL)
+            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
+            
+            // we process the JSON file and get an array of files to download back
+            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
+            print("Files to download: \(filesToDownload.count)")
+            
+            let queue = QueueController.sharedInstance
+            // this is a demo and we want to start fresh every time, probably not a good idea in production
+            queue.reset()
+            
+            for file in filesToDownload {
+                queue.addItem(url: file)
+            }
+            queue.startDownloading()
+            
+        } catch {
+            print("Error parsing \(sampleData)")
+        }
+        
+        // loading our location assets that are stored locally
         do {
             try FeatureStore.sharedInstance.load(filename: "sampleLocations", type: .location, completion: {
                 if let asset = FeatureStore.sharedInstance.getAsset(for: .location) as? LocationAsset {
@@ -38,7 +75,7 @@ class ViewController: UIViewController, GalleryLocationManagerDelegate {
             print("Error loading locations")
         }
         
-        // loading our beacons
+        // loading our beacon assets
         do {
             try FeatureStore.sharedInstance.load(filename: "sampleBeacons", type: .beacon, completion: {
                 if let asset = FeatureStore.sharedInstance.getAsset(for: .beacon) as? BeaconAsset {
@@ -61,37 +98,7 @@ class ViewController: UIViewController, GalleryLocationManagerDelegate {
             print("Error staring location ranging")
         }
         
-        // let's download some data
         
-        let sampleData = "rodinSampleData"
-        
-        let bundle = Bundle(for: type(of: self))
-        guard let fileURL = bundle.url(forResource: sampleData, withExtension: "json")
-            else {
-                print("Error loading file \(sampleData)")
-                return
-        }
-        
-        do {
-            let localData = try Data(contentsOf: fileURL)
-            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
-            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
-            
-            print("Files to download: \(filesToDownload.count)")
-            
-            let queue = QueueController.sharedInstance
-            
-            queue.reset()
-            
-            for file in filesToDownload {
-                queue.addItem(url: file)
-            }
-            
-            queue.startDownloading()
-            
-        } catch {
-            print("Error parsing \(sampleData)")
-        }
         
     }
     
@@ -131,20 +138,23 @@ class ViewController: UIViewController, GalleryLocationManagerDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
+}
+
+extension ViewController : GalleryLocationManagerDelegate {
     func locationManager(locationManager: GalleryLocationManager, didEnterLocation location: Location) {
         // do your magic here
         print("Entered location: \(location.name)")
     }
-
-
 }
 
 extension ViewController : QueueControllerDelegate {
+    func QueueControllerDownloadInProgress(queueController: QueueController, withProgress progress: Float) {
+        print("Download queue progress update: \(progress) %")
+    }
+
     
     func QueueControllerDidFinishDownloading(queueController: QueueController) {
-        print("FINISHED DOWNLOADING")
+        print("Download queue finished downloading.")
     }
 }
 
