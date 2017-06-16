@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var publishDataButton: UIButton!
     
     @IBOutlet weak var webView: UIWebView!
+    @IBOutlet weak var imageView: UIImageView!
     
     private let locationManager = GalleryLocationManager(locationManager: CLLocationManager())
     private let downloadQueue = QueueController.sharedInstance
@@ -163,10 +164,22 @@ class ViewController: UIViewController {
         let url = URL(string: "http://org.philamuseum.mobileframeworktests.s3.amazonaws.com/header.jpg")
         let request = CacheService.sharedInstance.makeRequest(url: url!)
         self.webView.loadRequest(request)
+        
+    
+        CacheService.sharedInstance.requestData(url: url!, forceUncached: false, completion: { localPath, data in
+            if data != nil {
+                let image = UIImage(data: data!)
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            }
+        })
     }
     
-    @IBAction func deleteCachedLiveData(_ sender: Any) {
+    @IBAction func deleteCachedData(_ sender: Any) {
         CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.live, completion: { _ in })
+        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.staging, completion: { _ in })
+        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.manual, completion: { _ in })
     }
     
     
