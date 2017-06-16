@@ -27,7 +27,10 @@ class ViewController: UIViewController {
         // this is a demo and we want to start fresh every time, probably not a good idea in production
         self.downloadQueue.reset()
         
+        // register our custom URL protocol to allow request interception on an app level
         URLProtocol.registerClass(mobileFrameworkURLProtocol.self)
+        
+        print("Cache Folder: \(CacheService.sharedInstance.cacheURL)")
 
     }
     
@@ -45,17 +48,17 @@ class ViewController: UIViewController {
             
             urls.append(URL(string: thumbnail)!)
             
-//            let headerArray = object["images_header"] as! [[String : Any]]
-//            for headerItem in headerArray {
-//                let header = headerItem["src"] as! String
-//                urls.append(URL(string: header)!)
-//            }
+            let headerArray = object["images_header"] as! [[String : Any]]
+            for headerItem in headerArray {
+                let header = headerItem["src"] as! String
+                urls.append(URL(string: header)!)
+            }
             
-//            let fullImageArray = object["full"] as! [[String : Any]]
-//            for fullImageItem in fullImageArray {
-//                let fullImage = fullImageItem["src"] as! String
-//                urls.append(URL(string: fullImage)!)
-//            }
+            let fullImageArray = object["full"] as! [[String : Any]]
+            for fullImageItem in fullImageArray {
+                let fullImage = fullImageItem["src"] as! String
+                urls.append(URL(string: fullImage)!)
+            }
         }
         return urls
     }
@@ -118,6 +121,9 @@ class ViewController: UIViewController {
         // let's make this controller our delegate so we can track progress
         self.downloadQueue.delegate = self
         
+        // let's start off fresh by deleting everything in staging
+        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.staging, completion: { _ in })
+        
         let sampleData = "rodinSampleData"
         
         let bundle = Bundle(for: type(of: self))
@@ -154,13 +160,21 @@ class ViewController: UIViewController {
     
     
     @IBAction func loadCachedPage(_ sender: Any) {
-        let url = URL(string: "http://192.168.8.28/rodin/sites/default/files/styles/square_thumbnail/public/f1929-7-125v1-pma.jpg?itok=QrEl4hBV")
-        let request = URLRequest(url: url!)
+        let url = URL(string: "http://org.philamuseum.mobileframeworktests.s3.amazonaws.com/header.jpg")
+        let request = CacheService.sharedInstance.makeRequest(url: url!)
         self.webView.loadRequest(request)
     }
     
     @IBAction func deleteCachedLiveData(_ sender: Any) {
         CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.live, completion: { _ in })
+    }
+    
+    
+    @IBAction func forceUncachedRequest(_ sender: Any) {
+        let url = URL(string: "http://org.philamuseum.mobileframeworktests.s3.amazonaws.com/header.jpg")
+        let request = CacheService.sharedInstance.makeRequest(url: url!, forceUncached: true)
+        
+        self.webView.loadRequest(request)
     }
     
 
