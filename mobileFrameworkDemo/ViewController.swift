@@ -208,20 +208,21 @@ extension ViewController : GalleryLocationManagerDelegate {
 }
 
 extension ViewController : QueueControllerDelegate {
-    func QueueControllerDownloadInProgress(queueController: QueueController, withProgress progress: Float) {
-        print("Download queue progress update: \(progress) %")
+    
+    func QueueControllerDownloadInProgress(queueController: QueueController, withProgress progress: Float, tasksTotal: Int, tasksLeft: Int) {
+        print("Download queue progress update: Task \(tasksLeft) of \(tasksTotal)")
         DispatchQueue.main.async {
             self.downloadProgressView?.setProgress(progress, animated: false)
         }
-        
     }
 
-    
     func QueueControllerDidFinishDownloading(queueController: QueueController) {
         print("Download queue finished downloading.")
         DispatchQueue.main.async {
             self.publishDataButton?.isEnabled = true
         }
     }
+    
+
 }
 
