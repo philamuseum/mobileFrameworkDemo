@@ -73,43 +73,45 @@ class ViewController: UIViewController {
         // (this should be done when you actually need it in your application and probably not in viewDidLoad)
         locationManager.requestPermissions()
         
-        // define the UUID you want to monitor along with a unique identifier
-        let sampleRegion = CLBeaconRegion(proximityUUID: Constants.beacons.defaultUUID!, identifier: "mobileFrameworkDemo")
-        locationManager.beaconRegion = sampleRegion
         
-        // loading our location assets that are stored locally
+        // this is just a sample where we can target Unit_ID values and give them a name we have defined in our locations file
+        let mainBuildingSubstitutions = [
+            "0248": "GSH_1_stairs",
+        ]
+        
+        LocationStore.sharedInstance.locationNameSubstitutions = mainBuildingSubstitutions
+        
         do {
-            try FeatureStore.sharedInstance.load(filename: "sampleLocations", type: .location, completion: {
+            try FeatureStore.sharedInstance.load(filename: "locations", ext: "json", type: .location, completion: {
                 if let asset = FeatureStore.sharedInstance.getAsset(for: .location) as? LocationAsset {
                     LocationStore.sharedInstance.load(fromAsset: asset)
                 }
             })
         } catch {
-            print("Error loading locations")
+            print("Error reading locations data")
         }
         
-        // loading our beacon assets
         do {
-            try FeatureStore.sharedInstance.load(filename: "sampleBeacons", type: .beacon, completion: {
-                if let asset = FeatureStore.sharedInstance.getAsset(for: .beacon) as? BeaconAsset {
-                    BeaconStore.sharedInstance.load(fromAsset: asset)
+            try FeatureStore.sharedInstance.load(filename: "sample", ext: "geojson", type: .geojson, completion: {
+                if let asset = FeatureStore.sharedInstance.getAsset(for: .geojson) as? GeoJSONAsset {
+                    LocationStore.sharedInstance.load(fromAsset: asset)
                 }
             })
         } catch {
-            print("Error loading beacons")
+            print("Error reading geojson data")
         }
         
-        // just some debug output
-        print("Number of beacons loaded: \(BeaconStore.sharedInstance.beacons.count)")
-        print("Number of locations loaded: \(LocationStore.sharedInstance.locations.count)")
-        
-        // let's start ranging locations
         do {
-            try locationManager.startLocationRanging()
-            print("Started ranging locations")
+            try locationManager.startLocationRanging(with: Constants.locationSensing.method.apple)
+            print("Started ranging locations (apple)")
         } catch {
             print("Error staring location ranging")
         }
+        
+        // this is a sample call to match a given location with the geojson file
+//        let location = CLLocation(latitude: 39.96584289247647, longitude: -75.18122912933873)
+//        let matchedLocation = LocationStore.sharedInstance.locationForCLLocation(location: location, ignoreFloors: true)
+//        print("Location: \(String(describing: matchedLocation?.name))")
         
     }
     
@@ -190,6 +192,24 @@ class ViewController: UIViewController {
         self.webView.loadRequest(request)
     }
     
+    @IBAction func registerDevice(_ sender: Any) {
+        
+        // we have to populate the backend configuration for this feature to work
+        
+        Constants.backend.apiKey = "YOUR API KEY"
+        Constants.backend.host = "YOUR HOST"
+        Constants.backend.registerEndpoint = "YOUR ENDPOINT"
+        
+        BackendService.shared.requestPermissions(completion: {
+            do {
+                try BackendService.shared.registerForRemoteNotifications()
+            } catch {
+                print("not able to register for remote notifications: \(error.localizedDescription)")
+            }
+        })
+    }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -204,6 +224,9 @@ extension ViewController : GalleryLocationManagerDelegate {
         DispatchQueue.main.async {
             self.currentLocationLabel.text = location.name
         }
+    }
+    
+    @nonobjc func locationManager(locationManager: GalleryLocationManager, didUpdateHeading newHeading: CLHeading) {
     }
 }
 
