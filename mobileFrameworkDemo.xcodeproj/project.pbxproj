@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A509AF061EFD9B17006C3832 /* locations.json in Resources */ = {isa = PBXBuildFile; fileRef = A509AF041EFD9B17006C3832 /* locations.json */; };
-		A509AF071EFD9B17006C3832 /* Rodin_Units.geojson in Resources */ = {isa = PBXBuildFile; fileRef = A509AF051EFD9B17006C3832 /* Rodin_Units.geojson */; };
 		A543A9C21EF192E3001E6C7D /* rodinSampleData.json in Resources */ = {isa = PBXBuildFile; fileRef = A543A9C11EF192E3001E6C7D /* rodinSampleData.json */; };
 		A551C1EF1EC20BEF0082CEB6 /* mobileFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5A3B87D1EC20BC900C1F692 /* mobileFramework.framework */; };
 		A551C1F01EC20BEF0082CEB6 /* mobileFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A5A3B87D1EC20BC900C1F692 /* mobileFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -18,8 +17,6 @@
 		A5A3B8341EC2081100C1F692 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A3B8331EC2081100C1F692 /* Assets.xcassets */; };
 		A5A3B8371EC2081100C1F692 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A3B8351EC2081100C1F692 /* LaunchScreen.storyboard */; };
 		A5BF8CD61F0D91F500AEE4E4 /* sample.geojson in Resources */ = {isa = PBXBuildFile; fileRef = A5BF8CD51F0D91F500AEE4E4 /* sample.geojson */; };
-		A5F202851F0166BC00EFD1BF /* locations_rodin.json in Resources */ = {isa = PBXBuildFile; fileRef = A5F202841F0166BC00EFD1BF /* locations_rodin.json */; };
-		A5F202881F017C9000EFD1BF /* Main_Units.geojson in Resources */ = {isa = PBXBuildFile; fileRef = A5F202871F017C9000EFD1BF /* Main_Units.geojson */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +59,6 @@
 
 /* Begin PBXFileReference section */
 		A509AF041EFD9B17006C3832 /* locations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = locations.json; path = SampleData/locations.json; sourceTree = "<group>"; };
-		A509AF051EFD9B17006C3832 /* Rodin_Units.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Rodin_Units.geojson; path = SampleData/Rodin_Units.geojson; sourceTree = "<group>"; };
 		A543A9C11EF192E3001E6C7D /* rodinSampleData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = rodinSampleData.json; path = SampleData/rodinSampleData.json; sourceTree = "<group>"; };
 		A5A3B8291EC2081100C1F692 /* mobileFrameworkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mobileFrameworkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5A3B82C1EC2081100C1F692 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -74,8 +70,6 @@
 		A5A3B8771EC20BC900C1F692 /* mobileFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mobileFramework.xcodeproj; path = ../mobileFramework/mobileFramework.xcodeproj; sourceTree = "<group>"; };
 		A5BF8CD41F0D856700AEE4E4 /* mobileFrameworkDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mobileFrameworkDemo.entitlements; sourceTree = "<group>"; };
 		A5BF8CD51F0D91F500AEE4E4 /* sample.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sample.geojson; path = SampleData/sample.geojson; sourceTree = "<group>"; };
-		A5F202841F0166BC00EFD1BF /* locations_rodin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = locations_rodin.json; path = SampleData/locations_rodin.json; sourceTree = "<group>"; };
-		A5F202871F017C9000EFD1BF /* Main_Units.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Main_Units.geojson; path = SampleData/Main_Units.geojson; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,10 +87,7 @@
 		A543A9BD1EF192B2001E6C7D /* SampleData */ = {
 			isa = PBXGroup;
 			children = (
-				A5F202871F017C9000EFD1BF /* Main_Units.geojson */,
 				A509AF041EFD9B17006C3832 /* locations.json */,
-				A5F202841F0166BC00EFD1BF /* locations_rodin.json */,
-				A509AF051EFD9B17006C3832 /* Rodin_Units.geojson */,
 				A543A9C11EF192E3001E6C7D /* rodinSampleData.json */,
 				A5BF8CD51F0D91F500AEE4E4 /* sample.geojson */,
 			);
@@ -245,12 +236,9 @@
 				A5BF8CD61F0D91F500AEE4E4 /* sample.geojson in Resources */,
 				A543A9C21EF192E3001E6C7D /* rodinSampleData.json in Resources */,
 				A5A3B8371EC2081100C1F692 /* LaunchScreen.storyboard in Resources */,
-				A509AF071EFD9B17006C3832 /* Rodin_Units.geojson in Resources */,
 				A509AF061EFD9B17006C3832 /* locations.json in Resources */,
-				A5F202881F017C9000EFD1BF /* Main_Units.geojson in Resources */,
 				A5A3B8341EC2081100C1F692 /* Assets.xcassets in Resources */,
 				A5A3B8321EC2081100C1F692 /* Main.storyboard in Resources */,
-				A5F202851F0166BC00EFD1BF /* locations_rodin.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
