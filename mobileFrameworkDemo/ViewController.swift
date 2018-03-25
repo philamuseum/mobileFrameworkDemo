@@ -12,205 +12,63 @@ import CoreLocation
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var currentLocationLabel: UILabel!
-    @IBOutlet weak var downloadProgressView: UIProgressView!
-    @IBOutlet weak var publishDataButton: UIButton!
-    
-    @IBOutlet weak var webView: UIWebView!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var logTextView: UITextView!
+    @IBOutlet weak var locationSensingButton: UIButton!
+    @IBOutlet weak var locationSensingLabel: UILabel!
     
     private let locationManager = GalleryLocationManager(locationManager: CLLocationManager())
-    private let downloadQueue = QueueController.sharedInstance
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // this is a demo and we want to start fresh every time, probably not a good idea in production
-        self.downloadQueue.reset()
+        Constants.backend.host = "https://hackathon.philamuseum.org";
         
-        // register our custom URL protocol to allow request interception on an app level
-        URLProtocol.registerClass(mobileFrameworkURLProtocol.self)
+        // Make sure to set the API key here, otherwise the app will scream!
+        Constants.backend.apiKey = "YOUR_API_KEY";
         
-        print("Cache Folder: \(CacheService.sharedInstance.cacheURL)")
-
-    }
-    
-    func getFilesToDownloadFromDataFile(jsonObject: [String: AnyObject]) -> [URL] {
-        
-        var urls = [URL]()
-        
-        let objects = jsonObject["objects"] as! [[String: Any]]
-        
-        for objectArray in objects {
-            let object = objectArray["object"] as! [String: Any]
-            
-            let thumbnailArray = object["thumbnail"] as! [String : Any]
-            let thumbnail = thumbnailArray["src"] as! String
-            
-            urls.append(URL(string: thumbnail)!)
-            
-            let headerArray = object["images_header"] as! [[String : Any]]
-            for headerItem in headerArray {
-                let header = headerItem["src"] as! String
-                urls.append(URL(string: header)!)
-            }
-            
-            let fullImageArray = object["full"] as! [[String : Any]]
-            for fullImageItem in fullImageArray {
-                let fullImage = fullImageItem["src"] as! String
-                urls.append(URL(string: fullImage)!)
-            }
+        do {
+            self.logTextView.text.append("Retrieving location assets from backend...\n")
+            try BackendService.shared.retrieveGeolocationData(completion: {
+                DispatchQueue.main.async {
+                    self.logTextView.text.append("Successfully loaded location assets from backend.\n")
+                    self.locationSensingButton.isEnabled = true
+                }
+            })
+        } catch let error {
+            self.logTextView.text.append("Error loading location assets from backend: \(error)\n")
         }
-        return urls
+        
     }
     
-    @IBAction func startLocationSensing(_ sender: Any) {
+    @IBAction func toggleLocationSensing(_ sender: Any) {
+        self.startLocationSensing()
+        self.locationSensingLabel.text = "Location Sensing active"
+    }
+    
+    func startLocationSensing() {
         
         // setting ourselfs up as delegate for location updates
         locationManager.delegate = self
         
         // we need to ask the user for when in use permissions
-        // (this should be done when you actually need it in your application and probably not in viewDidLoad)
         locationManager.requestPermissions()
-        
-        
-        // this is just a sample where we can target Unit_ID values and give them a name we have defined in our locations file
-        let mainBuildingSubstitutions = [
-            "0248": "GSH_1_stairs",
-        ]
-        
-        LocationStore.sharedInstance.locationNameSubstitutions = mainBuildingSubstitutions
-        
-        do {
-            try FeatureStore.sharedInstance.load(filename: "locations", ext: "json", type: .location, completion: {
-                if let asset = FeatureStore.sharedInstance.getAsset(for: .location) as? LocationAsset {
-                    LocationStore.sharedInstance.load(fromAsset: asset)
-                }
-            })
-        } catch {
-            print("Error reading locations data")
-        }
-        
-        do {
-            try FeatureStore.sharedInstance.load(filename: "sample", ext: "geojson", type: .geojson, completion: {
-                if let asset = FeatureStore.sharedInstance.getAsset(for: .geojson) as? GeoJSONAsset {
-                    LocationStore.sharedInstance.load(fromAsset: asset)
-                }
-            })
-        } catch {
-            print("Error reading geojson data")
-        }
         
         do {
             try locationManager.startLocationRanging(with: Constants.locationSensing.method.apple)
-            print("Started ranging locations (apple)")
-        } catch {
-            print("Error staring location ranging")
+            self.logTextView.text.append("Starting Location Sensing...\n")
+            self.locationSensingButton.isEnabled = false
+        } catch let error {
+            self.logTextView.text.append("Error starting Location Sensing: \(error)\n")
         }
         
-        // this is a sample call to match a given location with the geojson file
-//        let location = CLLocation(latitude: 39.96584289247647, longitude: -75.18122912933873)
-//        let matchedLocation = LocationStore.sharedInstance.locationForCLLocation(location: location, ignoreFloors: true)
-//        print("Location: \(String(describing: matchedLocation?.name))")
+        // this is a sample test call to match a given location with the geojson file
+        // note that we need to set ignoreFloors to true since we cannot define a floor in CLLocation (yeah, really...)
+        //        let location = CLLocation(latitude: 39.965186632142064, longitude: -75.1815766902897)
+        //        let matchedLocation = LocationStore.sharedInstance.locationForCLLocation(location: location, ignoreFloors: true)
+        //        print("Location: \(String(describing: matchedLocation?.name))") // this will return gallery 119
         
     }
     
-    @IBAction func startDownloadingContent(_ sender: Any) {
-        
-        // let's download some data (just an example, you would probably want to download asset data here)
-        
-        self.publishDataButton?.isEnabled = false
-        
-        // let's make this controller our delegate so we can track progress
-        self.downloadQueue.delegate = self
-        
-        // let's start off fresh by deleting everything in staging
-        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.staging, completion: { _ in })
-        
-        let sampleData = "rodinSampleData"
-        
-        let bundle = Bundle(for: type(of: self))
-        guard let sampleDataPathURL = bundle.url(forResource: sampleData, withExtension: "json")
-            else {
-                print("Error loading file \(sampleData)")
-                return
-        }
-        
-        do {
-            let localData = try Data(contentsOf: sampleDataPathURL)
-            let JSON = try JSONSerialization.jsonObject(with: localData, options: []) as! [String: AnyObject]
-            
-            // we process the JSON file and get an array of files to download back
-            let filesToDownload = getFilesToDownloadFromDataFile(jsonObject: JSON)
-            print("Files to download: \(filesToDownload.count)")
-            
-            for file in filesToDownload {
-                self.downloadQueue.addItem(url: file)
-            }
-            self.downloadQueue.startDownloading()
-            
-        } catch {
-            print("Error parsing \(sampleData)")
-        }
-
-    }
-    
-    @IBAction func publishData(_ sender: Any) {
-        CacheService.sharedInstance.publishStagingEnvironment(completion: { success in
-            print("Publishing content successful: \(success)")
-        })
-    }
-    
-    
-    @IBAction func loadCachedPage(_ sender: Any) {
-        let url = URL(string: "http://org.philamuseum.mobileframeworktests.s3.amazonaws.com/header.jpg")
-        let request = CacheService.sharedInstance.makeRequest(url: url!)
-        self.webView.loadRequest(request)
-        
-    
-        CacheService.sharedInstance.requestData(url: url!, forceUncached: false, completion: { localPath, data in
-            if data != nil {
-                let image = UIImage(data: data!)
-                DispatchQueue.main.async {
-                    self.imageView.image = image
-                }
-            }
-        })
-    }
-    
-    @IBAction func deleteCachedData(_ sender: Any) {
-        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.live, completion: { _ in })
-        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.staging, completion: { _ in })
-        CacheService.sharedInstance.purgeEnvironment(environment: Constants.cache.environment.manual, completion: { _ in })
-    }
-    
-    
-    @IBAction func forceUncachedRequest(_ sender: Any) {
-        let url = URL(string: "http://org.philamuseum.mobileframeworktests.s3.amazonaws.com/header.jpg")
-        let request = CacheService.sharedInstance.makeRequest(url: url!, forceUncached: true)
-        
-        self.webView.loadRequest(request)
-    }
-    
-    @IBAction func registerDevice(_ sender: Any) {
-        
-        // we have to populate the backend configuration for this feature to work
-        
-        Constants.backend.apiKey = "YOUR API KEY"
-        Constants.backend.host = "YOUR HOST"
-        Constants.backend.registerEndpoint = "YOUR ENDPOINT"
-        
-        BackendService.shared.requestPermissions(completion: {
-            do {
-                try BackendService.shared.registerForRemoteNotifications()
-            } catch {
-                print("not able to register for remote notifications: \(error.localizedDescription)")
-            }
-        })
-    }
-    
-    
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -220,32 +78,11 @@ class ViewController: UIViewController {
 extension ViewController : GalleryLocationManagerDelegate {
     func locationManager(locationManager: GalleryLocationManager, didEnterKnownLocation location: Location) {
         // do your magic here
-        print("Entered location: \(location.name)")
         DispatchQueue.main.async {
-            self.currentLocationLabel.text = location.name
+            self.logTextView.text.append("Entered Location: \(location.name) \n")
         }
     }
     
     @nonobjc func locationManager(locationManager: GalleryLocationManager, didUpdateHeading newHeading: CLHeading) {
     }
 }
-
-extension ViewController : QueueControllerDelegate {
-    
-    func QueueControllerDownloadInProgress(queueController: QueueController, withProgress progress: Float, tasksTotal: Int, tasksLeft: Int) {
-        print("Download queue progress update: Task \(tasksLeft) of \(tasksTotal)")
-        DispatchQueue.main.async {
-            self.downloadProgressView?.setProgress(progress, animated: false)
-        }
-    }
-
-    func QueueControllerDidFinishDownloading(queueController: QueueController) {
-        print("Download queue finished downloading.")
-        DispatchQueue.main.async {
-            self.publishDataButton?.isEnabled = true
-        }
-    }
-    
-
-}
-
